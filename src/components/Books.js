@@ -2,9 +2,14 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import BookActions from '../actions/BookActions';
 import {BookList} from './BookList';
 
 export class Books extends React.Component{
+
+    UNSAFE_componentWillMount(){
+        BookActions.readBooks();
+    }
 
     render() {
         return(
