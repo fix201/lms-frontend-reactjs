@@ -1,25 +1,22 @@
 import Dispatcher from '../dispatcher/appDispatcher';
 import {EventEmitter} from 'events';
 
-
-const CHANGE_EVENT = 'change';
-
 let _authorStore = {
   authors: []
 };
 
 class AuthorStoreClass extends EventEmitter{
 
-    addChangeListener(cb){
-        this.on(CHANGE_EVENT, cb);
+    addChangeListener(cb, AuthorEvent){
+        this.on(AuthorEvent, cb);
     }
 
-    removeChangeListener(cb){
-        this.removeListener(CHANGE_EVENT, cb);
+    removeChangeListener(cb, AuthorEvent){
+        this.removeListener(AuthorEvent, cb);
     }
 
-    emitChange(){
-        this.emit(CHANGE_EVENT);
+    emitChange(AuthorEvent){
+        this.emit(AuthorEvent);
     }
 
     getAllAuthors(){
@@ -35,7 +32,19 @@ Dispatcher.register( (action) => {
     switch (action.actionType){
         case 'read_authors':
             _authorStore.authors = action.data;
-            AuthorStore.emitChange();
+            AuthorStore.emitChange('AuthorChange');
+            break;
+        case 'delete_author':
+            _authorStore.authors = action.data;
+            AuthorStore.emitChange('AuthorDelete');
+            break;
+        case 'update_author':
+            _authorStore.authors = action.data;
+            AuthorStore.emitChange('AuthorUpdate');
+            break;
+        case 'add_author':
+            _authorStore.authors = action.data;
+            AuthorStore.emitChange('AuthorAdd');
             break;
         default:
             return;

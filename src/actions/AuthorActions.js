@@ -12,7 +12,35 @@ const AuthorsActions = {
                 data: authorList
             })
         })
+    },
+
+    deleteAuthor: (authorId) => {
+        AuthorApi.deleteAuthor(authorId, (res) => {
+            Dispatcher.dispatch({
+                actionType: 'delete_author',
+                status: res
+            })
+        })
+    },
+
+    updateAuthor: (author) => {
+        AuthorApi.updateAuthor(author, (res) => {
+            Dispatcher.dispatch({
+                actionType: 'update_author',
+                status: res
+            })
+        })
+    },
+
+    addAuthor: (author) => {
+        AuthorApi.updateAuthor(author, (res) => {
+            Dispatcher.dispatch({
+                actionType: 'add_author',
+                status: res
+            })
+        })
     }
+
 }
 
 module.exports = AuthorsActions;

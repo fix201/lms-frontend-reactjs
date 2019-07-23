@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import AuthorActions from '../actions/AuthorActions';
 
 function createAuthorRow(author, index) {
     return (
@@ -10,8 +10,9 @@ function createAuthorRow(author, index) {
             <td> {index + 1} </td>
             <td> {author.first_name} </td>
             <td> {author.last_name} </td>
-            <button>update</button>
-            <button>delete</button>
+            <td className="btn-toolbar"><button className="btn btn-success btn-rounded btn-sm my-0">update</button>
+                <button className="btn btn-danger btn-rounded btn-sm my-0" onClick={() => AuthorActions.deleteAuthor(author.author_id)}>delete</button>
+            </td>
         </tr>
     );
 }
@@ -21,17 +22,17 @@ export function AuthorList(props) {
     return (
         <div>
             <h1>Authors</h1>
-            <table className="table">
+            <table className="table table-borderless table-hover table-editable">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>#</th>
                         <th>First Name</th>
                         <th>Last Name</th>
+                        <th>Update / Delete</th>
                     </tr>
                 </thead>
                 <tbody>
                     {props.authorList.map(createAuthorRow, index)}
-                    <button>add</button>
                 </tbody>
             </table>
         </div>

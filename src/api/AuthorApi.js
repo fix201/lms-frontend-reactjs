@@ -8,6 +8,17 @@ var AuthorApi = {
 			.then(res => {
 				cb(res.data);
 			})
+	},
+
+	updateAuthor: (authorId) => {
+		axios.patch(Config.api + '/author/' + authorId)
+	},
+
+	deleteAuthor: (authorId, cb) => {
+		axios.delete(Config.api + '/author/' + authorId)
+			.then(res => {
+				cb(res.data);
+			})
 	}
 
 	//Add the rest of the  CRUD operation here

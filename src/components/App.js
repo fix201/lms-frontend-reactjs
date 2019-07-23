@@ -11,6 +11,7 @@ import {Publishers} from './Publishers.js';
 import BookStore from '../stores/BookStore';
 import AuthorStore from '../stores/AuthorStore';
 import PublisherStore from '../stores/PublisherStore';
+import AuthorActions from '../actions/AuthorActions';
 
 export class App extends React.Component{
 
@@ -37,15 +38,21 @@ export class App extends React.Component{
         );
     }
 
-    UNSAFE_componentWillMount(){
+    componentDidMount(){
         BookStore.addChangeListener(this._onBookChange.bind(this));
-        AuthorStore.addChangeListener(this._onAuthorChange.bind(this));
+        AuthorStore.addChangeListener(this._onAuthorChange.bind(this), 'AuthorChange');
+        AuthorStore.addChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
+        AuthorStore.addChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
+        AuthorStore.addChangeListener(this._onAuthorAdd.bind(this), 'AuthorAdd');
         PublisherStore.addChangeListener(this._onPublisherChange.bind(this));
     }
 
     componentWillUnmount(){
         BookStore.removeChangeListener(this._onBookChange.bind(this));
-        AuthorStore.removeChangeListener(this._onAuthorChange.bind(this));
+        AuthorStore.removeChangeListener(this._onAuthorChange.bind(this), 'AuthorChange');
+        AuthorStore.removeChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
+        AuthorStore.removeChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
+        AuthorStore.removeChangeListener(this._onAuthorAdd.bind(this), 'AuthorAdd');
         PublisherStore.removeChangeListener(this._onPublisherChange.bind(this));
     }
 
@@ -55,6 +62,18 @@ export class App extends React.Component{
 
     _onAuthorChange(){
         this.setState({authorList: AuthorStore.getAllAuthors()});
+    }
+
+    _onAuthorDelete(){
+        AuthorActions.readAuthors();
+    }
+
+    _onAuthorUpdate(){
+        AuthorActions.readAuthors();
+    }
+
+    _onAuthorAdd() {
+        AuthorActions.readAuthors();
     }
 
     _onPublisherChange(){

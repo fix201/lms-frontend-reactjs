@@ -42319,7 +42319,35 @@ var AuthorsActions = {
                 data: authorList
             });
         });
+    },
+
+    deleteAuthor: function deleteAuthor(authorId) {
+        _AuthorApi2.default.deleteAuthor(authorId, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'delete_author',
+                status: res
+            });
+        });
+    },
+
+    updateAuthor: function updateAuthor(author) {
+        _AuthorApi2.default.updateAuthor(author, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'update_author',
+                status: res
+            });
+        });
+    },
+
+    addAuthor: function addAuthor(author) {
+        _AuthorApi2.default.updateAuthor(author, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'add_author',
+                status: res
+            });
+        });
     }
+
 };
 
 module.exports = AuthorsActions;
@@ -42396,6 +42424,16 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var AuthorApi = {
 	getAllAuthors: function getAllAuthors(cb) {
 		_axios2.default.get(_config2.default.api + '/author/').then(function (res) {
+			cb(res.data);
+		});
+	},
+
+	updateAuthor: function updateAuthor(authorId) {
+		_axios2.default.patch(_config2.default.api + '/author/' + authorId);
+	},
+
+	deleteAuthor: function deleteAuthor(authorId, cb) {
+		_axios2.default.delete(_config2.default.api + '/author/' + authorId).then(function (res) {
 			cb(res.data);
 		});
 	}
@@ -42487,6 +42525,10 @@ var _PublisherStore = require('../stores/PublisherStore');
 
 var _PublisherStore2 = _interopRequireDefault(_PublisherStore);
 
+var _AuthorActions = require('../actions/AuthorActions');
+
+var _AuthorActions2 = _interopRequireDefault(_AuthorActions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42537,17 +42579,23 @@ var App = exports.App = function (_React$Component) {
             );
         }
     }, {
-        key: 'UNSAFE_componentWillMount',
-        value: function UNSAFE_componentWillMount() {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
             _BookStore2.default.addChangeListener(this._onBookChange.bind(this));
-            _AuthorStore2.default.addChangeListener(this._onAuthorChange.bind(this));
+            _AuthorStore2.default.addChangeListener(this._onAuthorChange.bind(this), 'AuthorChange');
+            _AuthorStore2.default.addChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
+            _AuthorStore2.default.addChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
+            _AuthorStore2.default.addChangeListener(this._onAuthorAdd.bind(this), 'AuthorAdd');
             _PublisherStore2.default.addChangeListener(this._onPublisherChange.bind(this));
         }
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
             _BookStore2.default.removeChangeListener(this._onBookChange.bind(this));
-            _AuthorStore2.default.removeChangeListener(this._onAuthorChange.bind(this));
+            _AuthorStore2.default.removeChangeListener(this._onAuthorChange.bind(this), 'AuthorChange');
+            _AuthorStore2.default.removeChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
+            _AuthorStore2.default.removeChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
+            _AuthorStore2.default.removeChangeListener(this._onAuthorAdd.bind(this), 'AuthorAdd');
             _PublisherStore2.default.removeChangeListener(this._onPublisherChange.bind(this));
         }
     }, {
@@ -42561,6 +42609,21 @@ var App = exports.App = function (_React$Component) {
             this.setState({ authorList: _AuthorStore2.default.getAllAuthors() });
         }
     }, {
+        key: '_onAuthorDelete',
+        value: function _onAuthorDelete() {
+            _AuthorActions2.default.readAuthors();
+        }
+    }, {
+        key: '_onAuthorUpdate',
+        value: function _onAuthorUpdate() {
+            _AuthorActions2.default.readAuthors();
+        }
+    }, {
+        key: '_onAuthorAdd',
+        value: function _onAuthorAdd() {
+            _AuthorActions2.default.readAuthors();
+        }
+    }, {
         key: '_onPublisherChange',
         value: function _onPublisherChange() {
             this.setState({ publisherList: _PublisherStore2.default.getAllPublishers() });
@@ -42570,7 +42633,7 @@ var App = exports.App = function (_React$Component) {
     return App;
 }(_react2.default.Component);
 
-},{"../stores/AuthorStore":109,"../stores/BookStore":110,"../stores/PublisherStore":111,"./Authors.js":99,"./Books.js":101,"./Header.js":102,"./Home.js":103,"./Publishers.js":105,"react":79,"react-router-dom":64}],98:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"../stores/AuthorStore":109,"../stores/BookStore":110,"../stores/PublisherStore":111,"./Authors.js":99,"./Books.js":101,"./Header.js":102,"./Home.js":103,"./Publishers.js":105,"react":79,"react-router-dom":64}],98:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42585,6 +42648,10 @@ var _react2 = _interopRequireDefault(_react);
 var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _AuthorActions = require('../actions/AuthorActions');
+
+var _AuthorActions2 = _interopRequireDefault(_AuthorActions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42614,14 +42681,20 @@ function createAuthorRow(author, index) {
             ' '
         ),
         _react2.default.createElement(
-            'button',
-            null,
-            'update'
-        ),
-        _react2.default.createElement(
-            'button',
-            null,
-            'delete'
+            'td',
+            { className: 'btn-toolbar' },
+            _react2.default.createElement(
+                'button',
+                { className: 'btn btn-success btn-rounded btn-sm my-0' },
+                'update'
+            ),
+            _react2.default.createElement(
+                'button',
+                { className: 'btn btn-danger btn-rounded btn-sm my-0', onClick: function onClick() {
+                        return _AuthorActions2.default.deleteAuthor(author.author_id);
+                    } },
+                'delete'
+            )
         )
     );
 }
@@ -42638,7 +42711,7 @@ function AuthorList(props) {
         ),
         _react2.default.createElement(
             'table',
-            { className: 'table' },
+            { className: 'table table-borderless table-hover table-editable' },
             _react2.default.createElement(
                 'thead',
                 null,
@@ -42648,7 +42721,7 @@ function AuthorList(props) {
                     _react2.default.createElement(
                         'th',
                         null,
-                        'ID'
+                        '#'
                     ),
                     _react2.default.createElement(
                         'th',
@@ -42659,18 +42732,18 @@ function AuthorList(props) {
                         'th',
                         null,
                         'Last Name'
+                    ),
+                    _react2.default.createElement(
+                        'th',
+                        null,
+                        'Update / Delete'
                     )
                 )
             ),
             _react2.default.createElement(
                 'tbody',
                 null,
-                props.authorList.map(createAuthorRow, index),
-                _react2.default.createElement(
-                    'button',
-                    null,
-                    'add'
-                )
+                props.authorList.map(createAuthorRow, index)
             )
         )
     );
@@ -42680,7 +42753,7 @@ AuthorList.propTypes = {
     authorList: _propTypes2.default.array.isRequired
 };
 
-},{"prop-types":44,"react":79}],99:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"prop-types":44,"react":79}],99:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43301,8 +43374,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CHANGE_EVENT = 'change';
-
 var _authorStore = {
     authors: []
 };
@@ -43318,18 +43389,18 @@ var AuthorStoreClass = function (_EventEmitter) {
 
     _createClass(AuthorStoreClass, [{
         key: 'addChangeListener',
-        value: function addChangeListener(cb) {
-            this.on(CHANGE_EVENT, cb);
+        value: function addChangeListener(cb, AuthorEvent) {
+            this.on(AuthorEvent, cb);
         }
     }, {
         key: 'removeChangeListener',
-        value: function removeChangeListener(cb) {
-            this.removeListener(CHANGE_EVENT, cb);
+        value: function removeChangeListener(cb, AuthorEvent) {
+            this.removeListener(AuthorEvent, cb);
         }
     }, {
         key: 'emitChange',
-        value: function emitChange() {
-            this.emit(CHANGE_EVENT);
+        value: function emitChange(AuthorEvent) {
+            this.emit(AuthorEvent);
         }
     }, {
         key: 'getAllAuthors',
@@ -43348,7 +43419,19 @@ _appDispatcher2.default.register(function (action) {
     switch (action.actionType) {
         case 'read_authors':
             _authorStore.authors = action.data;
-            AuthorStore.emitChange();
+            AuthorStore.emitChange('AuthorChange');
+            break;
+        case 'delete_author':
+            _authorStore.authors = action.data;
+            AuthorStore.emitChange('AuthorDelete');
+            break;
+        case 'update_author':
+            _authorStore.authors = action.data;
+            AuthorStore.emitChange('AuthorUpdate');
+            break;
+        case 'add_author':
+            _authorStore.authors = action.data;
+            AuthorStore.emitChange('AuthorAdd');
             break;
         default:
             return;

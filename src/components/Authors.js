@@ -8,7 +8,7 @@ import { AuthorList } from './AuthorList';
 export class Authors extends React.Component {
 
     UNSAFE_componentWillMount() {
-        AuthorActions.readAuthors()
+        AuthorActions.readAuthors();
     }
 
     render() {
