@@ -42352,7 +42352,7 @@ var AuthorsActions = {
 
 module.exports = AuthorsActions;
 
-},{"../api/AuthorApi":94,"../dispatcher/appDispatcher":109}],92:[function(require,module,exports){
+},{"../api/AuthorApi":94,"../dispatcher/appDispatcher":111}],92:[function(require,module,exports){
 'use strict';
 
 var _BookApi = require('../api/BookApi');
@@ -42380,7 +42380,7 @@ var BooksActions = {
 
 module.exports = BooksActions;
 
-},{"../api/BookApi":95,"../dispatcher/appDispatcher":109}],93:[function(require,module,exports){
+},{"../api/BookApi":95,"../dispatcher/appDispatcher":111}],93:[function(require,module,exports){
 'use strict';
 
 var _PublisherApi = require('../api/PublisherApi');
@@ -42403,12 +42403,39 @@ var PublishersActions = {
                 data: publisherList
             });
         });
+    },
+
+    deletePublisher: function deletePublisher(publisherId) {
+        _PublisherApi2.default.deletePublisher(publisherId, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'delete_publisher',
+                status: res
+            });
+        });
+    },
+
+    updatePublisher: function updatePublisher(publisher) {
+        _PublisherApi2.default.updatePublisher(publisher, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'update_publisher',
+                status: res
+            });
+        });
+    },
+
+    addPublisher: function addPublisher(publisher) {
+        _PublisherApi2.default.addPublisher(publisher, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'add_publisher',
+                status: res
+            });
+        });
     }
 };
 
 module.exports = PublishersActions;
 
-},{"../api/PublisherApi":96,"../dispatcher/appDispatcher":109}],94:[function(require,module,exports){
+},{"../api/PublisherApi":96,"../dispatcher/appDispatcher":111}],94:[function(require,module,exports){
 "use strict";
 
 var _axios = require('axios');
@@ -42451,7 +42478,7 @@ var AuthorApi = {
 
 module.exports = AuthorApi;
 
-},{"../config":108,"axios":1}],95:[function(require,module,exports){
+},{"../config":110,"axios":1}],95:[function(require,module,exports){
 "use strict";
 
 var _axios = require('axios');
@@ -42479,11 +42506,33 @@ var _axios = require('axios');
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _config = require('../config');
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PublisherApi = {
 	getAllPublishers: function getAllPublishers(cb) {
 		_axios2.default.get('http://localhost:3000/publisher/').then(function (res) {
+			cb(res.data);
+		});
+	},
+
+	updatePublisher: function updatePublisher(publisher, cb) {
+		_axios2.default.patch(_config2.default.api + '/publisher/', publisher).then(function (res) {
+			cb(res.data);
+		});
+	},
+
+	deletePublisher: function deletePublisher(publisherId, cb) {
+		_axios2.default.delete(_config2.default.api + '/publisher/' + publisherId).then(function (res) {
+			cb(res.data);
+		});
+	},
+
+	addPublisher: function addPublisher(publisher, cb) {
+		_axios2.default.post(_config2.default.api + '/publisher/', publisher).then(function (res) {
 			cb(res.data);
 		});
 	}
@@ -42493,7 +42542,7 @@ var PublisherApi = {
 
 module.exports = PublisherApi;
 
-},{"axios":1}],97:[function(require,module,exports){
+},{"../config":110,"axios":1}],97:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42592,6 +42641,88 @@ var AddAuthorForm = exports.AddAuthorForm = function (_React$Component) {
 }(_react2.default.Component);
 
 },{"../actions/AuthorActions":91,"react":79}],98:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.AddPublisherForm = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _PublisherActions = require('../actions/PublisherActions');
+
+var _PublisherActions2 = _interopRequireDefault(_PublisherActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AddPublisherForm = exports.AddPublisherForm = function (_React$Component) {
+    _inherits(AddPublisherForm, _React$Component);
+
+    function AddPublisherForm(props) {
+        _classCallCheck(this, AddPublisherForm);
+
+        var _this = _possibleConstructorReturn(this, (AddPublisherForm.__proto__ || Object.getPrototypeOf(AddPublisherForm)).call(this, props));
+
+        _this.state = { publisher_name: '' };
+
+        _this.handleChange = _this.handleChange.bind(_this);
+        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        return _this;
+    }
+
+    _createClass(AddPublisherForm, [{
+        key: 'handleChange',
+        value: function handleChange(event) {
+            this.setState({ publisher_name: event.target.value });
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(event) {
+            var publisher = {
+                publisherName: this.state.publisher_name
+            };
+            _PublisherActions2.default.addPublisher(publisher);
+            event.preventDefault();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'form',
+                { onSubmit: this.handleSubmit },
+                _react2.default.createElement(
+                    'legend',
+                    null,
+                    'Add Publisher'
+                ),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Publisher Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.publisher_name, onChange: this.handleChange })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { type: 'submit', value: 'Add' })
+            );
+        }
+    }]);
+
+    return AddPublisherForm;
+}(_react2.default.Component);
+
+},{"../actions/PublisherActions":93,"react":79}],99:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42634,6 +42765,10 @@ var _PublisherStore2 = _interopRequireDefault(_PublisherStore);
 var _AuthorActions = require('../actions/AuthorActions');
 
 var _AuthorActions2 = _interopRequireDefault(_AuthorActions);
+
+var _PublisherActions = require('../actions/PublisherActions');
+
+var _PublisherActions2 = _interopRequireDefault(_PublisherActions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42692,7 +42827,8 @@ var App = exports.App = function (_React$Component) {
             _AuthorStore2.default.addChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
             _AuthorStore2.default.addChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
             _AuthorStore2.default.addChangeListener(this._onAuthorAdd.bind(this), 'AuthorAdd');
-            _PublisherStore2.default.addChangeListener(this._onPublisherChange.bind(this));
+            _PublisherStore2.default.addChangeListener(this._onPublisherChange.bind(this), 'PublisherChange');
+            _PublisherStore2.default.addChangeListener(this._onPublisherEdit.bind(this), 'PublisherEdit');
         }
     }, {
         key: 'componentWillUnmount',
@@ -42702,7 +42838,8 @@ var App = exports.App = function (_React$Component) {
             _AuthorStore2.default.removeChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
             _AuthorStore2.default.removeChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
             _AuthorStore2.default.removeChangeListener(this._onAuthorAdd.bind(this), 'AuthorAdd');
-            _PublisherStore2.default.removeChangeListener(this._onPublisherChange.bind(this));
+            _PublisherStore2.default.removeChangeListener(this._onPublisherChange.bind(this), 'PublisherChange');
+            _PublisherStore2.default.removeChangeListener(this._onPublisherEdit.bind(this), 'PublisherEdit');
         }
     }, {
         key: '_onBookChange',
@@ -42734,12 +42871,17 @@ var App = exports.App = function (_React$Component) {
         value: function _onPublisherChange() {
             this.setState({ publisherList: _PublisherStore2.default.getAllPublishers() });
         }
+    }, {
+        key: '_onPublisherEdit',
+        value: function _onPublisherEdit() {
+            _PublisherActions2.default.readPublishers();
+        }
     }]);
 
     return App;
 }(_react2.default.Component);
 
-},{"../actions/AuthorActions":91,"../stores/AuthorStore":111,"../stores/BookStore":112,"../stores/PublisherStore":113,"./Authors.js":100,"./Books.js":102,"./Header.js":103,"./Home.js":104,"./Publishers.js":106,"react":79,"react-router-dom":64}],99:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"../actions/PublisherActions":93,"../stores/AuthorStore":113,"../stores/BookStore":114,"../stores/PublisherStore":115,"./Authors.js":101,"./Books.js":103,"./Header.js":104,"./Home.js":105,"./Publishers.js":107,"react":79,"react-router-dom":64}],100:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42876,7 +43018,7 @@ var AuthorList = exports.AuthorList = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                     'table',
-                    { className: 'table table-borderless table-hover table-editable' },
+                    { className: 'table table-hover' },
                     _react2.default.createElement(
                         'thead',
                         null,
@@ -42890,12 +43032,12 @@ var AuthorList = exports.AuthorList = function (_React$Component) {
                             ),
                             _react2.default.createElement(
                                 'th',
-                                { 'data-editable': 'true' },
+                                null,
                                 'First Name'
                             ),
                             _react2.default.createElement(
                                 'th',
-                                { 'data-editable': 'true' },
+                                null,
                                 'Last Name'
                             ),
                             _react2.default.createElement(
@@ -42938,7 +43080,7 @@ AuthorList.propTypes = {
     authorList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/AuthorActions":91,"./AddAuthorForm":97,"./UpdateAuthorForm":107,"prop-types":44,"react":79}],100:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"./AddAuthorForm":97,"./UpdateAuthorForm":108,"prop-types":44,"react":79}],101:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43002,7 +43144,7 @@ Authors.propTypes = {
     authorList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/AuthorActions":91,"./AuthorList":99,"prop-types":44,"react":79}],101:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"./AuthorList":100,"prop-types":44,"react":79}],102:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43109,7 +43251,7 @@ BookList.propTypes = {
     bookList: _propTypes2.default.array.isRequired
 };
 
-},{"prop-types":44,"react":79}],102:[function(require,module,exports){
+},{"prop-types":44,"react":79}],103:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43173,7 +43315,7 @@ Books.propTypes = {
     bookList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/BookActions":92,"./BookList":101,"prop-types":44,"react":79}],103:[function(require,module,exports){
+},{"../actions/BookActions":92,"./BookList":102,"prop-types":44,"react":79}],104:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43268,7 +43410,7 @@ var Header = exports.Header = function (_React$Component) {
     return Header;
 }(_react2.default.Component);
 
-},{"react":79,"react-router-dom":64}],104:[function(require,module,exports){
+},{"react":79,"react-router-dom":64}],105:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43317,13 +43459,15 @@ var Home = exports.Home = function (_React$Component) {
     return Home;
 }(_react2.default.Component);
 
-},{"react":79}],105:[function(require,module,exports){
+},{"react":79}],106:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.PublisherList = PublisherList;
+exports.PublisherList = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -43333,74 +43477,176 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _PublisherActions = require('../actions/PublisherActions');
+
+var _PublisherActions2 = _interopRequireDefault(_PublisherActions);
+
+var _AddPublisherForm = require('./AddPublisherForm');
+
+var _UpdatePublisherForm = require('./UpdatePublisherForm');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function createPublisherRow(publisher, index) {
-    return _react2.default.createElement(
-        'tr',
-        { key: publisher.publisher_id },
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            index + 1,
-            ' '
-        ),
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            publisher.publisher_name,
-            ' '
-        )
-    );
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function PublisherList(props) {
-    var index = 0;
-    return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-            'h1',
-            null,
-            'Publishers'
-        ),
-        _react2.default.createElement(
-            'table',
-            { className: 'table' },
-            _react2.default.createElement(
-                'thead',
-                null,
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PublisherList = exports.PublisherList = function (_React$Component) {
+    _inherits(PublisherList, _React$Component);
+
+    function PublisherList() {
+        _classCallCheck(this, PublisherList);
+
+        var _this = _possibleConstructorReturn(this, (PublisherList.__proto__ || Object.getPrototypeOf(PublisherList)).call(this));
+
+        _this.state = {
+            isUpdate: false,
+            isAdd: false,
+            publisher: null
+        };
+        _this.isUpdating = _this.isUpdating.bind(_this);
+        _this.isAdding = _this.isAdding.bind(_this);
+        return _this;
+    }
+
+    _createClass(PublisherList, [{
+        key: 'isUpdating',
+        value: function isUpdating(publisher) {
+            this.state.publisher = publisher, this.setState(function (prevState) {
+                return {
+                    isUpdate: !prevState.isUpdate
+                };
+            });
+        }
+    }, {
+        key: 'isAdding',
+        value: function isAdding(publisher) {
+            this.publisher = publisher, this.setState(function (prevState) {
+                return {
+                    isAdd: !prevState.isAdd
+                };
+            });
+        }
+    }, {
+        key: 'createPublisherRow',
+        value: function createPublisherRow(publisher, index) {
+            var _this2 = this;
+
+            return _react2.default.createElement(
+                'tr',
+                { key: publisher.publisher_id },
                 _react2.default.createElement(
-                    'tr',
+                    'td',
                     null,
+                    ' ',
+                    index + 1,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    ' ',
+                    publisher.publisher_name,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    { className: 'btn-toolbar' },
                     _react2.default.createElement(
-                        'th',
-                        null,
-                        'ID'
+                        'button',
+                        { id: 'update',
+                            className: 'update btn btn-warning btn-sm',
+                            onClick: function onClick() {
+                                _this2.isUpdating(publisher);
+                            } },
+                        'update'
                     ),
                     _react2.default.createElement(
-                        'th',
-                        null,
-                        'Name'
+                        'button',
+                        { className: 'btn btn-danger btn-rounded btn-sm buttonDelete',
+                            onClick: function onClick() {
+                                return _PublisherActions2.default.deletePublisher(publisher.publisher_id);
+                            } },
+                        'delete'
                     )
                 )
-            ),
-            _react2.default.createElement(
-                'tbody',
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
+
+            return _react2.default.createElement(
+                'div',
                 null,
-                props.publisherList.map(createPublisherRow, index)
-            )
-        )
-    );
-}
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    'Publishers'
+                ),
+                _react2.default.createElement(
+                    'table',
+                    { className: 'table table-hover ' },
+                    _react2.default.createElement(
+                        'thead',
+                        null,
+                        _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                '#'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'Name'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'Update / Delete'
+                            )
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'tbody',
+                        null,
+                        this.props.publisherList.map(this.createPublisherRow, this),
+                        _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                _react2.default.createElement(
+                                    'button',
+                                    { onClick: function onClick() {
+                                            return _this3.isAdding(_this3.publisher);
+                                        } },
+                                    'Add'
+                                )
+                            )
+                        )
+                    )
+                ),
+                this.state.isAdd && _react2.default.createElement(_AddPublisherForm.AddPublisherForm, null) || this.state.isUpdate && _react2.default.createElement(_UpdatePublisherForm.UpdatePublisherForm, { publisher: this.state.publisher })
+            );
+        }
+    }]);
+
+    return PublisherList;
+}(_react2.default.Component);
 
 PublisherList.propTypes = {
     publisherList: _propTypes2.default.array.isRequired
 };
 
-},{"prop-types":44,"react":79}],106:[function(require,module,exports){
+},{"../actions/PublisherActions":93,"./AddPublisherForm":98,"./UpdatePublisherForm":109,"prop-types":44,"react":79}],107:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43464,7 +43710,7 @@ Publishers.propTypes = {
     publisherList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/PublisherActions":93,"./PublisherList":105,"prop-types":44,"react":79}],107:[function(require,module,exports){
+},{"../actions/PublisherActions":93,"./PublisherList":106,"prop-types":44,"react":79}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43562,7 +43808,91 @@ var UpdateAuthorForm = exports.UpdateAuthorForm = function (_React$Component) {
     return UpdateAuthorForm;
 }(_react2.default.Component);
 
-},{"../actions/AuthorActions":91,"react":79}],108:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"react":79}],109:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.UpdatePublisherForm = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _PublisherActions = require('../actions/PublisherActions');
+
+var _PublisherActions2 = _interopRequireDefault(_PublisherActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UpdatePublisherForm = exports.UpdatePublisherForm = function (_React$Component) {
+    _inherits(UpdatePublisherForm, _React$Component);
+
+    function UpdatePublisherForm(props) {
+        _classCallCheck(this, UpdatePublisherForm);
+
+        var _this = _possibleConstructorReturn(this, (UpdatePublisherForm.__proto__ || Object.getPrototypeOf(UpdatePublisherForm)).call(this, props));
+
+        _this.state = { publisher_name: '' };
+
+        _this.handleChange = _this.handleChange.bind(_this);
+        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        return _this;
+    }
+
+    _createClass(UpdatePublisherForm, [{
+        key: 'handleChange',
+        value: function handleChange(event) {
+            this.setState({ publisher_name: event.target.value });
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(event) {
+
+            var publisher = {
+                publisherId: this.props.publisher.publisher_id,
+                publisherName: this.state.publisher_name
+            };
+            _PublisherActions2.default.updatePublisher(publisher);
+            event.preventDefault();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'form',
+                { onSubmit: this.handleSubmit },
+                _react2.default.createElement(
+                    'legend',
+                    null,
+                    'Update Publisher'
+                ),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Publisher Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.publisher_name, onChange: this.handleChange, placeholder: this.props.publisher.publisher_name })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { type: 'submit', value: 'Update' })
+            );
+        }
+    }]);
+
+    return UpdatePublisherForm;
+}(_react2.default.Component);
+
+},{"../actions/PublisherActions":93,"react":79}],110:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43574,7 +43904,7 @@ var Config = {
 
 exports.default = Config;
 
-},{}],109:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43605,7 +43935,7 @@ var AppDispatcher = new DispatcherClass();
 
 exports.default = AppDispatcher;
 
-},{"flux":29}],110:[function(require,module,exports){
+},{"flux":29}],112:[function(require,module,exports){
 'use strict';
 
 var _jquery = require('jquery');
@@ -43634,7 +43964,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _react2.default.createElement(_App.App, null)
 ), document.getElementById('app'));
 
-},{"./components/App.js":98,"jquery":36,"react":79,"react-dom":48,"react-router-dom":64}],111:[function(require,module,exports){
+},{"./components/App.js":99,"jquery":36,"react":79,"react-dom":48,"react-router-dom":64}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43723,7 +44053,7 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = AuthorStore;
 
-},{"../dispatcher/appDispatcher":109,"events":27}],112:[function(require,module,exports){
+},{"../dispatcher/appDispatcher":111,"events":27}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43802,7 +44132,7 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = BookStore;
 
-},{"../dispatcher/appDispatcher":109,"events":27}],113:[function(require,module,exports){
+},{"../dispatcher/appDispatcher":111,"events":27}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43825,8 +44155,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CHANGE_EVENT = 'change';
-
 var _publisherStore = {
     publishers: []
 };
@@ -43842,18 +44170,18 @@ var PublisherStoreClass = function (_EventEmitter) {
 
     _createClass(PublisherStoreClass, [{
         key: 'addChangeListener',
-        value: function addChangeListener(cb) {
-            this.on(CHANGE_EVENT, cb);
+        value: function addChangeListener(cb, PublisherEvent) {
+            this.on(PublisherEvent, cb);
         }
     }, {
         key: 'removeChangeListener',
-        value: function removeChangeListener(cb) {
-            this.removeListener(CHANGE_EVENT, cb);
+        value: function removeChangeListener(cb, PublisherEvent) {
+            this.removeListener(PublisherEvent, cb);
         }
     }, {
         key: 'emitChange',
-        value: function emitChange() {
-            this.emit(CHANGE_EVENT);
+        value: function emitChange(PublisherEvent) {
+            this.emit(PublisherEvent);
         }
     }, {
         key: 'getAllPublishers',
@@ -43872,7 +44200,19 @@ _appDispatcher2.default.register(function (action) {
     switch (action.actionType) {
         case 'read_publishers':
             _publisherStore.publishers = action.data;
-            PublisherStore.emitChange();
+            PublisherStore.emitChange('PublisherChange');
+            break;
+        case 'delete_publisher':
+            _publisherStore.publishers = action.data;
+            PublisherStore.emitChange('PublisherEdit');
+            break;
+        case 'update_publisher':
+            _publisherStore.publishers = action.data;
+            PublisherStore.emitChange('PublisherEdit');
+            break;
+        case 'add_publisher':
+            _publisherStore.publishers = action.data;
+            PublisherStore.emitChange('PublisherEdit');
             break;
         default:
             return;
@@ -43881,4 +44221,4 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = PublisherStore;
 
-},{"../dispatcher/appDispatcher":109,"events":27}]},{},[110]);
+},{"../dispatcher/appDispatcher":111,"events":27}]},{},[112]);

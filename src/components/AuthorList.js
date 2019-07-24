@@ -62,12 +62,12 @@ export class AuthorList extends React.Component {
         return (
             <div>
                 <h1>Authors</h1>
-                <table className="table table-borderless table-hover table-editable">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th data-editable="true">First Name</th>
-                            <th data-editable="true">Last Name</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
                             <th>Update / Delete</th>
                         </tr>
                     </thead>
