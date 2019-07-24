@@ -28,12 +28,12 @@ const AuthorsActions = {
             Dispatcher.dispatch({
                 actionType: 'update_author',
                 status: res
-            })
+            }) 
         })
     },
 
     addAuthor: (author) => {
-        AuthorApi.updateAuthor(author, (res) => {
+        AuthorApi.addAuthor(author, (res) => {
             Dispatcher.dispatch({
                 actionType: 'add_author',
                 status: res

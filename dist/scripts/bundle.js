@@ -42340,7 +42340,7 @@ var AuthorsActions = {
     },
 
     addAuthor: function addAuthor(author) {
-        _AuthorApi2.default.updateAuthor(author, function (res) {
+        _AuthorApi2.default.addAuthor(author, function (res) {
             _appDispatcher2.default.dispatch({
                 actionType: 'add_author',
                 status: res
@@ -42352,7 +42352,7 @@ var AuthorsActions = {
 
 module.exports = AuthorsActions;
 
-},{"../api/AuthorApi":94,"../dispatcher/appDispatcher":107}],92:[function(require,module,exports){
+},{"../api/AuthorApi":94,"../dispatcher/appDispatcher":109}],92:[function(require,module,exports){
 'use strict';
 
 var _BookApi = require('../api/BookApi');
@@ -42380,7 +42380,7 @@ var BooksActions = {
 
 module.exports = BooksActions;
 
-},{"../api/BookApi":95,"../dispatcher/appDispatcher":107}],93:[function(require,module,exports){
+},{"../api/BookApi":95,"../dispatcher/appDispatcher":109}],93:[function(require,module,exports){
 'use strict';
 
 var _PublisherApi = require('../api/PublisherApi');
@@ -42408,7 +42408,7 @@ var PublishersActions = {
 
 module.exports = PublishersActions;
 
-},{"../api/PublisherApi":96,"../dispatcher/appDispatcher":107}],94:[function(require,module,exports){
+},{"../api/PublisherApi":96,"../dispatcher/appDispatcher":109}],94:[function(require,module,exports){
 "use strict";
 
 var _axios = require('axios');
@@ -42428,12 +42428,20 @@ var AuthorApi = {
 		});
 	},
 
-	updateAuthor: function updateAuthor(authorId) {
-		_axios2.default.patch(_config2.default.api + '/author/' + authorId);
+	updateAuthor: function updateAuthor(author, cb) {
+		_axios2.default.patch(_config2.default.api + '/author/', author).then(function (res) {
+			cb(res.data);
+		});
 	},
 
 	deleteAuthor: function deleteAuthor(authorId, cb) {
 		_axios2.default.delete(_config2.default.api + '/author/' + authorId).then(function (res) {
+			cb(res.data);
+		});
+	},
+
+	addAuthor: function addAuthor(author, cb) {
+		_axios2.default.post(_config2.default.api + '/author/', author).then(function (res) {
 			cb(res.data);
 		});
 	}
@@ -42443,7 +42451,7 @@ var AuthorApi = {
 
 module.exports = AuthorApi;
 
-},{"../config":106,"axios":1}],95:[function(require,module,exports){
+},{"../config":108,"axios":1}],95:[function(require,module,exports){
 "use strict";
 
 var _axios = require('axios');
@@ -42486,6 +42494,104 @@ var PublisherApi = {
 module.exports = PublisherApi;
 
 },{"axios":1}],97:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.AddAuthorForm = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _AuthorActions = require('../actions/AuthorActions');
+
+var _AuthorActions2 = _interopRequireDefault(_AuthorActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AddAuthorForm = exports.AddAuthorForm = function (_React$Component) {
+    _inherits(AddAuthorForm, _React$Component);
+
+    function AddAuthorForm(props) {
+        _classCallCheck(this, AddAuthorForm);
+
+        var _this = _possibleConstructorReturn(this, (AddAuthorForm.__proto__ || Object.getPrototypeOf(AddAuthorForm)).call(this, props));
+
+        _this.state = { first_name: '', last_name: '' };
+
+        _this.handleFnChange = _this.handleFnChange.bind(_this);
+        _this.handleLnChange = _this.handleLnChange.bind(_this);
+        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        return _this;
+    }
+
+    _createClass(AddAuthorForm, [{
+        key: 'handleFnChange',
+        value: function handleFnChange(event) {
+            this.setState({ first_name: event.target.value });
+        }
+    }, {
+        key: 'handleLnChange',
+        value: function handleLnChange(event) {
+            this.setState({ last_name: event.target.value });
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(event) {
+            var author = {
+                firstName: this.state.first_name,
+                lastName: this.state.last_name
+            };
+            _AuthorActions2.default.addAuthor(author);
+            // alert('A name was submitted: ' + author.first_name);
+            event.preventDefault();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'form',
+                { onSubmit: this.handleSubmit },
+                _react2.default.createElement(
+                    'legend',
+                    null,
+                    'Add Author'
+                ),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'First Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.first_name, onChange: this.handleFnChange })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Last Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.last_name, onChange: this.handleLnChange })
+                ),
+                '  ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { type: 'submit', value: 'Add' })
+            );
+        }
+    }]);
+
+    return AddAuthorForm;
+}(_react2.default.Component);
+
+},{"../actions/AuthorActions":91,"react":79}],98:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42633,13 +42739,15 @@ var App = exports.App = function (_React$Component) {
     return App;
 }(_react2.default.Component);
 
-},{"../actions/AuthorActions":91,"../stores/AuthorStore":109,"../stores/BookStore":110,"../stores/PublisherStore":111,"./Authors.js":99,"./Books.js":101,"./Header.js":102,"./Home.js":103,"./Publishers.js":105,"react":79,"react-router-dom":64}],98:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"../stores/AuthorStore":111,"../stores/BookStore":112,"../stores/PublisherStore":113,"./Authors.js":100,"./Books.js":102,"./Header.js":103,"./Home.js":104,"./Publishers.js":106,"react":79,"react-router-dom":64}],99:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.AuthorList = AuthorList;
+exports.AuthorList = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -42653,107 +42761,184 @@ var _AuthorActions = require('../actions/AuthorActions');
 
 var _AuthorActions2 = _interopRequireDefault(_AuthorActions);
 
+var _AddAuthorForm = require('./AddAuthorForm');
+
+var _UpdateAuthorForm = require('./UpdateAuthorForm');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function createAuthorRow(author, index) {
-    return _react2.default.createElement(
-        'tr',
-        { key: author.author_id },
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            index + 1,
-            ' '
-        ),
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            author.first_name,
-            ' '
-        ),
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            author.last_name,
-            ' '
-        ),
-        _react2.default.createElement(
-            'td',
-            { className: 'btn-toolbar' },
-            _react2.default.createElement(
-                'button',
-                { className: 'btn btn-success btn-rounded btn-sm my-0' },
-                'update'
-            ),
-            _react2.default.createElement(
-                'button',
-                { className: 'btn btn-danger btn-rounded btn-sm my-0', onClick: function onClick() {
-                        return _AuthorActions2.default.deleteAuthor(author.author_id);
-                    } },
-                'delete'
-            )
-        )
-    );
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function AuthorList(props) {
-    var index = 0;
-    return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-            'h1',
-            null,
-            'Authors'
-        ),
-        _react2.default.createElement(
-            'table',
-            { className: 'table table-borderless table-hover table-editable' },
-            _react2.default.createElement(
-                'thead',
-                null,
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AuthorList = exports.AuthorList = function (_React$Component) {
+    _inherits(AuthorList, _React$Component);
+
+    function AuthorList() {
+        _classCallCheck(this, AuthorList);
+
+        var _this = _possibleConstructorReturn(this, (AuthorList.__proto__ || Object.getPrototypeOf(AuthorList)).call(this));
+
+        _this.state = {
+            isUpdate: false,
+            isAdd: false,
+            author: null
+        };
+        _this.isUpdating = _this.isUpdating.bind(_this);
+        _this.isAdding = _this.isAdding.bind(_this);
+        return _this;
+    }
+
+    _createClass(AuthorList, [{
+        key: 'isUpdating',
+        value: function isUpdating(author) {
+            this.state.author = author, this.setState(function (prevState) {
+                return {
+                    isUpdate: !prevState.isUpdate
+                };
+            });
+        }
+    }, {
+        key: 'isAdding',
+        value: function isAdding(author) {
+            this.author = author, this.setState(function (prevState) {
+                return {
+                    isAdd: !prevState.isAdd
+                };
+            });
+        }
+    }, {
+        key: 'createAuthorRow',
+        value: function createAuthorRow(author, index) {
+            var _this2 = this;
+
+            return _react2.default.createElement(
+                'tr',
+                { key: author.author_id },
                 _react2.default.createElement(
-                    'tr',
+                    'td',
                     null,
+                    ' ',
+                    index + 1,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    ' ',
+                    author.first_name,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    ' ',
+                    author.last_name,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    { className: 'btn-toolbar' },
                     _react2.default.createElement(
-                        'th',
-                        null,
-                        '#'
+                        'button',
+                        { id: 'update', 'data-toggle': 'modal', 'data-target': '#edit', 'data-uid': '1',
+                            className: 'update btn btn-warning btn-sm',
+                            onClick: function onClick() {
+                                _this2.isUpdating(author);
+                            } },
+                        'update'
                     ),
                     _react2.default.createElement(
-                        'th',
-                        null,
-                        'First Name'
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        null,
-                        'Last Name'
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        null,
-                        'Update / Delete'
+                        'button',
+                        { className: 'btn btn-danger btn-rounded btn-sm buttonDelete', 'data-toggle': 'modal', 'data-target': '#modalDelete',
+                            onClick: function onClick() {
+                                return _AuthorActions2.default.deleteAuthor(author.author_id);
+                            } },
+                        'delete'
                     )
                 )
-            ),
-            _react2.default.createElement(
-                'tbody',
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
+
+            return _react2.default.createElement(
+                'div',
                 null,
-                props.authorList.map(createAuthorRow, index)
-            )
-        )
-    );
-}
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    'Authors'
+                ),
+                _react2.default.createElement(
+                    'table',
+                    { className: 'table table-borderless table-hover table-editable' },
+                    _react2.default.createElement(
+                        'thead',
+                        null,
+                        _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                '#'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                { 'data-editable': 'true' },
+                                'First Name'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                { 'data-editable': 'true' },
+                                'Last Name'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'Update / Delete'
+                            )
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'tbody',
+                        null,
+                        this.props.authorList.map(this.createAuthorRow, this),
+                        _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                _react2.default.createElement(
+                                    'button',
+                                    { onClick: function onClick() {
+                                            return _this3.isAdding(_this3.author);
+                                        } },
+                                    'Add'
+                                )
+                            )
+                        )
+                    )
+                ),
+                this.state.isAdd && _react2.default.createElement(_AddAuthorForm.AddAuthorForm, null) || this.state.isUpdate && _react2.default.createElement(_UpdateAuthorForm.UpdateAuthorForm, { author: this.state.author })
+            );
+        }
+    }]);
+
+    return AuthorList;
+}(_react2.default.Component);
 
 AuthorList.propTypes = {
     authorList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/AuthorActions":91,"prop-types":44,"react":79}],99:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"./AddAuthorForm":97,"./UpdateAuthorForm":107,"prop-types":44,"react":79}],100:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42817,7 +43002,7 @@ Authors.propTypes = {
     authorList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/AuthorActions":91,"./AuthorList":98,"prop-types":44,"react":79}],100:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"./AuthorList":99,"prop-types":44,"react":79}],101:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42924,7 +43109,7 @@ BookList.propTypes = {
     bookList: _propTypes2.default.array.isRequired
 };
 
-},{"prop-types":44,"react":79}],101:[function(require,module,exports){
+},{"prop-types":44,"react":79}],102:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42988,7 +43173,7 @@ Books.propTypes = {
     bookList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/BookActions":92,"./BookList":100,"prop-types":44,"react":79}],102:[function(require,module,exports){
+},{"../actions/BookActions":92,"./BookList":101,"prop-types":44,"react":79}],103:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43083,7 +43268,7 @@ var Header = exports.Header = function (_React$Component) {
     return Header;
 }(_react2.default.Component);
 
-},{"react":79,"react-router-dom":64}],103:[function(require,module,exports){
+},{"react":79,"react-router-dom":64}],104:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43132,7 +43317,7 @@ var Home = exports.Home = function (_React$Component) {
     return Home;
 }(_react2.default.Component);
 
-},{"react":79}],104:[function(require,module,exports){
+},{"react":79}],105:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43215,7 +43400,7 @@ PublisherList.propTypes = {
     publisherList: _propTypes2.default.array.isRequired
 };
 
-},{"prop-types":44,"react":79}],105:[function(require,module,exports){
+},{"prop-types":44,"react":79}],106:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43279,7 +43464,105 @@ Publishers.propTypes = {
     publisherList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/PublisherActions":93,"./PublisherList":104,"prop-types":44,"react":79}],106:[function(require,module,exports){
+},{"../actions/PublisherActions":93,"./PublisherList":105,"prop-types":44,"react":79}],107:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.UpdateAuthorForm = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _AuthorActions = require('../actions/AuthorActions');
+
+var _AuthorActions2 = _interopRequireDefault(_AuthorActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UpdateAuthorForm = exports.UpdateAuthorForm = function (_React$Component) {
+    _inherits(UpdateAuthorForm, _React$Component);
+
+    function UpdateAuthorForm(props) {
+        _classCallCheck(this, UpdateAuthorForm);
+
+        var _this = _possibleConstructorReturn(this, (UpdateAuthorForm.__proto__ || Object.getPrototypeOf(UpdateAuthorForm)).call(this, props));
+
+        _this.state = { first_name: '', last_name: '' };
+
+        _this.handleFnChange = _this.handleFnChange.bind(_this);
+        _this.handleLnChange = _this.handleLnChange.bind(_this);
+        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        return _this;
+    }
+
+    _createClass(UpdateAuthorForm, [{
+        key: 'handleFnChange',
+        value: function handleFnChange(event) {
+            this.setState({ first_name: event.target.value });
+        }
+    }, {
+        key: 'handleLnChange',
+        value: function handleLnChange(event) {
+            this.setState({ last_name: event.target.value });
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(event) {
+            var author = {
+                authorId: this.props.author.author_id,
+                firstName: this.state.first_name,
+                lastName: this.state.last_name
+            };
+            _AuthorActions2.default.updateAuthor(author);
+            event.preventDefault();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'form',
+                { onSubmit: this.handleSubmit },
+                _react2.default.createElement(
+                    'legend',
+                    null,
+                    'Update Author'
+                ),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'First Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.first_name, onChange: this.handleFnChange, placeholder: this.props.author.first_name })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Last Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.last_name, onChange: this.handleLnChange, placeholder: this.props.author.last_name })
+                ),
+                '  ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { type: 'submit', value: 'Update' })
+            );
+        }
+    }]);
+
+    return UpdateAuthorForm;
+}(_react2.default.Component);
+
+},{"../actions/AuthorActions":91,"react":79}],108:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43291,7 +43574,7 @@ var Config = {
 
 exports.default = Config;
 
-},{}],107:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43322,7 +43605,7 @@ var AppDispatcher = new DispatcherClass();
 
 exports.default = AppDispatcher;
 
-},{"flux":29}],108:[function(require,module,exports){
+},{"flux":29}],110:[function(require,module,exports){
 'use strict';
 
 var _jquery = require('jquery');
@@ -43351,7 +43634,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _react2.default.createElement(_App.App, null)
 ), document.getElementById('app'));
 
-},{"./components/App.js":97,"jquery":36,"react":79,"react-dom":48,"react-router-dom":64}],109:[function(require,module,exports){
+},{"./components/App.js":98,"jquery":36,"react":79,"react-dom":48,"react-router-dom":64}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43440,7 +43723,7 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = AuthorStore;
 
-},{"../dispatcher/appDispatcher":107,"events":27}],110:[function(require,module,exports){
+},{"../dispatcher/appDispatcher":109,"events":27}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43519,7 +43802,7 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = BookStore;
 
-},{"../dispatcher/appDispatcher":107,"events":27}],111:[function(require,module,exports){
+},{"../dispatcher/appDispatcher":109,"events":27}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43598,4 +43881,4 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = PublisherStore;
 
-},{"../dispatcher/appDispatcher":107,"events":27}]},{},[108]);
+},{"../dispatcher/appDispatcher":109,"events":27}]},{},[110]);
