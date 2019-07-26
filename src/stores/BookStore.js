@@ -1,28 +1,25 @@
 import Dispatcher from '../dispatcher/appDispatcher';
-import {EventEmitter} from 'events';
-
-
-const CHANGE_EVENT = 'change';
+import { EventEmitter } from 'events';
 
 let _bookStore = {
-  books: []
+    books: []
 };
 
-class BookStoreClass extends EventEmitter{
+class BookStoreClass extends EventEmitter {
 
-    addChangeListener(cb){
-        this.on(CHANGE_EVENT, cb);
+    addChangeListener(cb, BookEvent) {
+        this.on(BookEvent, cb);
     }
 
-    removeChangeListener(cb){
-        this.removeListener(CHANGE_EVENT, cb);
+    removeChangeListener(cb, BookEvent) {
+        this.removeListener(BookEvent, cb);
     }
 
-    emitChange(){
-        this.emit(CHANGE_EVENT);
+    emitChange(BookEvent) {
+        this.emit(BookEvent);
     }
 
-    getAllBooks(){
+    getAllBooks() {
         return _bookStore.books;
     }
 
@@ -30,16 +27,28 @@ class BookStoreClass extends EventEmitter{
 
 const BookStore = new BookStoreClass();
 
-Dispatcher.register( (action) => {
+Dispatcher.register((action) => {
 
-    switch (action.actionType){
+    switch (action.actionType) {
         case 'read_books':
             _bookStore.books = action.data;
-            BookStore.emitChange();
+            BookStore.emitChange('BookChange');
+            break;
+        case 'delete_book':
+            _bookStore.books = action.data;
+            BookStore.emitChange('BookEdit');
+            break;
+        case 'update_book':
+            _bookStore.books = action.data;
+            BookStore.emitChange('BookEdit');
+            break;
+        case 'add_book':
+            _bookStore.books = action.data;
+            BookStore.emitChange('BookEdit');
             break;
         default:
             return;
     }
-} );
+});
 
 export default BookStore;

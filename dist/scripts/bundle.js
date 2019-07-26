@@ -42352,7 +42352,7 @@ var AuthorsActions = {
 
 module.exports = AuthorsActions;
 
-},{"../api/AuthorApi":94,"../dispatcher/appDispatcher":111}],92:[function(require,module,exports){
+},{"../api/AuthorApi":94,"../dispatcher/appDispatcher":113}],92:[function(require,module,exports){
 'use strict';
 
 var _BookApi = require('../api/BookApi');
@@ -42369,10 +42369,37 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var BooksActions = {
     readBooks: function readBooks() {
-        _BookApi2.default.getAllBooks(function (bookList) {
+        _BookApi2.default.getAllBooks(function (BookList) {
             _appDispatcher2.default.dispatch({
                 actionType: 'read_books',
-                data: bookList
+                data: BookList
+            });
+        });
+    },
+
+    deleteBook: function deleteBook(bookId) {
+        _BookApi2.default.deleteBook(bookId, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'delete_book',
+                status: res
+            });
+        });
+    },
+
+    updateBook: function updateBook(book) {
+        _BookApi2.default.updateBook(book, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'update_book',
+                status: res
+            });
+        });
+    },
+
+    addBook: function addBook(book) {
+        _BookApi2.default.addBook(book, function (res) {
+            _appDispatcher2.default.dispatch({
+                actionType: 'add_book',
+                status: res
             });
         });
     }
@@ -42380,7 +42407,7 @@ var BooksActions = {
 
 module.exports = BooksActions;
 
-},{"../api/BookApi":95,"../dispatcher/appDispatcher":111}],93:[function(require,module,exports){
+},{"../api/BookApi":95,"../dispatcher/appDispatcher":113}],93:[function(require,module,exports){
 'use strict';
 
 var _PublisherApi = require('../api/PublisherApi');
@@ -42435,7 +42462,7 @@ var PublishersActions = {
 
 module.exports = PublishersActions;
 
-},{"../api/PublisherApi":96,"../dispatcher/appDispatcher":111}],94:[function(require,module,exports){
+},{"../api/PublisherApi":96,"../dispatcher/appDispatcher":113}],94:[function(require,module,exports){
 "use strict";
 
 var _axios = require('axios');
@@ -42478,18 +42505,40 @@ var AuthorApi = {
 
 module.exports = AuthorApi;
 
-},{"../config":110,"axios":1}],95:[function(require,module,exports){
+},{"../config":112,"axios":1}],95:[function(require,module,exports){
 "use strict";
 
 var _axios = require('axios');
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _config = require('../config');
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var BookApi = {
 	getAllBooks: function getAllBooks(cb) {
-		_axios2.default.get('http://localhost:3000/book/').then(function (res) {
+		_axios2.default.get(_config2.default.api + '/book/').then(function (res) {
+			cb(res.data);
+		});
+	},
+
+	updateBook: function updateBook(book, cb) {
+		_axios2.default.patch(_config2.default.api + '/book/', book).then(function (res) {
+			cb(res.data);
+		});
+	},
+
+	deleteBook: function deleteBook(bookId, cb) {
+		_axios2.default.delete(_config2.default.api + '/book/' + bookId).then(function (res) {
+			cb(res.data);
+		});
+	},
+
+	addBook: function addBook(book, cb) {
+		_axios2.default.post(_config2.default.api + '/book/', book).then(function (res) {
 			cb(res.data);
 		});
 	}
@@ -42499,7 +42548,7 @@ var BookApi = {
 
 module.exports = BookApi;
 
-},{"axios":1}],96:[function(require,module,exports){
+},{"../config":112,"axios":1}],96:[function(require,module,exports){
 "use strict";
 
 var _axios = require('axios');
@@ -42514,7 +42563,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var PublisherApi = {
 	getAllPublishers: function getAllPublishers(cb) {
-		_axios2.default.get('http://localhost:3000/publisher/').then(function (res) {
+		_axios2.default.get(_config2.default.api + '/publisher/').then(function (res) {
 			cb(res.data);
 		});
 	},
@@ -42542,7 +42591,7 @@ var PublisherApi = {
 
 module.exports = PublisherApi;
 
-},{"../config":110,"axios":1}],97:[function(require,module,exports){
+},{"../config":112,"axios":1}],97:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42646,6 +42695,138 @@ var AddAuthorForm = exports.AddAuthorForm = function (_React$Component) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.AddBookForm = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _BookActions = require('../actions/BookActions');
+
+var _BookActions2 = _interopRequireDefault(_BookActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var AddBookForm = exports.AddBookForm = function (_React$Component) {
+    _inherits(AddBookForm, _React$Component);
+
+    function AddBookForm(props) {
+        _classCallCheck(this, AddBookForm);
+
+        var _this = _possibleConstructorReturn(this, (AddBookForm.__proto__ || Object.getPrototypeOf(AddBookForm)).call(this, props));
+
+        _this.state = {
+            title: '',
+            first_name: '',
+            last_name: '',
+            publisher_name: ''
+        };
+
+        _this.handleTitleChange = _this.handleTitleChange.bind(_this);
+        _this.handleAfnChange = _this.handleAfnChange.bind(_this);
+        _this.handleAlnChange = _this.handleAlnChange.bind(_this);
+        _this.handlePnChange = _this.handlePnChange.bind(_this);
+        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        return _this;
+    }
+
+    _createClass(AddBookForm, [{
+        key: 'handleTitleChange',
+        value: function handleTitleChange(event) {
+            this.setState({ title: event.target.value });
+        }
+    }, {
+        key: 'handleAfnChange',
+        value: function handleAfnChange(event) {
+            this.setState({ first_name: event.target.value });
+        }
+    }, {
+        key: 'handleAlnChange',
+        value: function handleAlnChange(event) {
+            this.setState({ last_name: event.target.value });
+        }
+    }, {
+        key: 'handlePnChange',
+        value: function handlePnChange(event) {
+            this.setState({ publisher_name: event.target.value });
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(event) {
+            var book = {
+                title: this.state.title,
+                firstName: this.state.first_name,
+                lastName: this.state.last_name,
+                publisherName: this.state.publisher_name
+            };
+            _BookActions2.default.addBook(book);
+            event.preventDefault();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'form',
+                { onSubmit: this.handleSubmit },
+                _react2.default.createElement(
+                    'legend',
+                    null,
+                    'Add Book'
+                ),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Book Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.title, onChange: this.handleTitleChange })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Author First Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.first_name, onChange: this.handleAfnChange })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Author Last Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.last_name, onChange: this.handleAlnChange })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Publisher Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.publisher_name, onChange: this.handlePnChange })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { type: 'submit', value: 'Add' })
+            );
+        }
+    }]);
+
+    return AddBookForm;
+}(_react2.default.Component);
+
+},{"../actions/BookActions":92,"react":79}],99:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.AddPublisherForm = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -42722,7 +42903,7 @@ var AddPublisherForm = exports.AddPublisherForm = function (_React$Component) {
     return AddPublisherForm;
 }(_react2.default.Component);
 
-},{"../actions/PublisherActions":93,"react":79}],99:[function(require,module,exports){
+},{"../actions/PublisherActions":93,"react":79}],100:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -42765,6 +42946,10 @@ var _PublisherStore2 = _interopRequireDefault(_PublisherStore);
 var _AuthorActions = require('../actions/AuthorActions');
 
 var _AuthorActions2 = _interopRequireDefault(_AuthorActions);
+
+var _BookActions = require('../actions/BookActions');
+
+var _BookActions2 = _interopRequireDefault(_BookActions);
 
 var _PublisherActions = require('../actions/PublisherActions');
 
@@ -42822,7 +43007,8 @@ var App = exports.App = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            _BookStore2.default.addChangeListener(this._onBookChange.bind(this));
+            _BookStore2.default.addChangeListener(this._onBookChange.bind(this), 'BookChange');
+            _BookStore2.default.addChangeListener(this._onBookEdit.bind(this), 'BookEdit');
             _AuthorStore2.default.addChangeListener(this._onAuthorChange.bind(this), 'AuthorChange');
             _AuthorStore2.default.addChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
             _AuthorStore2.default.addChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
@@ -42833,7 +43019,8 @@ var App = exports.App = function (_React$Component) {
     }, {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
-            _BookStore2.default.removeChangeListener(this._onBookChange.bind(this));
+            _BookStore2.default.removeChangeListener(this._onBookChange.bind(this), 'BookChange');
+            _BookStore2.default.removeChangeListener(this._onBookEdit.bind(this), 'BookEdit');
             _AuthorStore2.default.removeChangeListener(this._onAuthorChange.bind(this), 'AuthorChange');
             _AuthorStore2.default.removeChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
             _AuthorStore2.default.removeChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
@@ -42845,6 +43032,11 @@ var App = exports.App = function (_React$Component) {
         key: '_onBookChange',
         value: function _onBookChange() {
             this.setState({ bookList: _BookStore2.default.getAllBooks() });
+        }
+    }, {
+        key: '_onBookEdit',
+        value: function _onBookEdit() {
+            _BookActions2.default.readBooks();
         }
     }, {
         key: '_onAuthorChange',
@@ -42881,7 +43073,7 @@ var App = exports.App = function (_React$Component) {
     return App;
 }(_react2.default.Component);
 
-},{"../actions/AuthorActions":91,"../actions/PublisherActions":93,"../stores/AuthorStore":113,"../stores/BookStore":114,"../stores/PublisherStore":115,"./Authors.js":101,"./Books.js":103,"./Header.js":104,"./Home.js":105,"./Publishers.js":107,"react":79,"react-router-dom":64}],100:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"../actions/BookActions":92,"../actions/PublisherActions":93,"../stores/AuthorStore":115,"../stores/BookStore":116,"../stores/PublisherStore":117,"./Authors.js":102,"./Books.js":104,"./Header.js":105,"./Home.js":106,"./Publishers.js":108,"react":79,"react-router-dom":64}],101:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43068,7 +43260,12 @@ var AuthorList = exports.AuthorList = function (_React$Component) {
                         )
                     )
                 ),
-                this.state.isAdd && _react2.default.createElement(_AddAuthorForm.AddAuthorForm, null) || this.state.isUpdate && _react2.default.createElement(_UpdateAuthorForm.UpdateAuthorForm, { author: this.state.author })
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    this.state.isUpdate && _react2.default.createElement(_UpdateAuthorForm.UpdateAuthorForm, { author: this.state.author })
+                ),
+                this.state.isAdd && _react2.default.createElement(_AddAuthorForm.AddAuthorForm, null)
             );
         }
     }]);
@@ -43080,7 +43277,7 @@ AuthorList.propTypes = {
     authorList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/AuthorActions":91,"./AddAuthorForm":97,"./UpdateAuthorForm":108,"prop-types":44,"react":79}],101:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"./AddAuthorForm":97,"./UpdateAuthorForm":109,"prop-types":44,"react":79}],102:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43144,13 +43341,15 @@ Authors.propTypes = {
     authorList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/AuthorActions":91,"./AuthorList":100,"prop-types":44,"react":79}],102:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"./AuthorList":101,"prop-types":44,"react":79}],103:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.BookList = BookList;
+exports.BookList = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = require('react');
 
@@ -43160,98 +43359,205 @@ var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
+var _BookActions = require('../actions/BookActions');
+
+var _BookActions2 = _interopRequireDefault(_BookActions);
+
+var _AddBookForm = require('./AddBookForm');
+
+var _UpdateBookForm = require('./UpdateBookForm');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function createBookRow(book, index) {
-    return _react2.default.createElement(
-        'tr',
-        { key: book.book_id },
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            index + 1,
-            ' '
-        ),
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            book.title,
-            ' '
-        ),
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            book.author_id,
-            ' '
-        ),
-        _react2.default.createElement(
-            'td',
-            null,
-            ' ',
-            book.publisher_id,
-            ' '
-        )
-    );
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-function BookList(props) {
-    var index = 0;
-    return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-            'h1',
-            null,
-            'Books'
-        ),
-        _react2.default.createElement(
-            'table',
-            { className: 'table' },
-            _react2.default.createElement(
-                'thead',
-                null,
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BookList = exports.BookList = function (_React$Component) {
+    _inherits(BookList, _React$Component);
+
+    function BookList() {
+        _classCallCheck(this, BookList);
+
+        var _this = _possibleConstructorReturn(this, (BookList.__proto__ || Object.getPrototypeOf(BookList)).call(this));
+
+        _this.state = {
+            isUpdate: false,
+            isAdd: false,
+            book: null
+        };
+        _this.isUpdating = _this.isUpdating.bind(_this);
+        _this.isAdding = _this.isAdding.bind(_this);
+        return _this;
+    }
+
+    _createClass(BookList, [{
+        key: 'isUpdating',
+        value: function isUpdating(book) {
+            this.state.book = book, this.setState(function (prevState) {
+                return {
+                    isUpdate: !prevState.isUpdate
+                };
+            });
+        }
+    }, {
+        key: 'isAdding',
+        value: function isAdding(book) {
+            this.book = book, this.setState(function (prevState) {
+                return {
+                    isAdd: !prevState.isAdd
+                };
+            });
+        }
+    }, {
+        key: 'createBookRow',
+        value: function createBookRow(book, index) {
+            var _this2 = this;
+
+            return _react2.default.createElement(
+                'tr',
+                { key: book.book_id },
                 _react2.default.createElement(
-                    'tr',
+                    'td',
                     null,
+                    ' ',
+                    index + 1,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    ' ',
+                    book.title,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    ' ',
+                    book.first_name + ' ' + book.last_name,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    ' ',
+                    book.publisher_name,
+                    ' '
+                ),
+                _react2.default.createElement(
+                    'td',
+                    { className: 'btn-toolbar' },
                     _react2.default.createElement(
-                        'th',
-                        null,
-                        'ID'
+                        'button',
+                        { id: 'update',
+                            className: 'update btn btn-warning btn-sm',
+                            onClick: function onClick() {
+                                _this2.isUpdating(book);
+                            } },
+                        'update'
                     ),
                     _react2.default.createElement(
-                        'th',
-                        null,
-                        'Title'
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        null,
-                        'Author'
-                    ),
-                    _react2.default.createElement(
-                        'th',
-                        null,
-                        'Publisher'
+                        'button',
+                        { className: 'btn btn-danger btn-rounded btn-sm buttonDelete',
+                            onClick: function onClick() {
+                                return _BookActions2.default.deleteBook(book.book_id);
+                            } },
+                        'delete'
                     )
                 )
-            ),
-            _react2.default.createElement(
-                'tbody',
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this3 = this;
+
+            return _react2.default.createElement(
+                'div',
                 null,
-                props.bookList.map(createBookRow, index)
-            )
-        )
-    );
-}
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    'Books'
+                ),
+                _react2.default.createElement(
+                    'table',
+                    { className: 'table' },
+                    _react2.default.createElement(
+                        'thead',
+                        null,
+                        _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                '#'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'Title'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'Author'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'Publisher'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'Update / Delete'
+                            )
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'tbody',
+                        null,
+                        this.props.bookList.map(this.createBookRow, this),
+                        _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'td',
+                                null,
+                                _react2.default.createElement(
+                                    'button',
+                                    { onClick: function onClick() {
+                                            return _this3.isAdding(_this3.book);
+                                        } },
+                                    'Add'
+                                )
+                            )
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    this.state.isUpdate && _react2.default.createElement(_UpdateBookForm.UpdateBookForm, { book: this.state.book })
+                ),
+                this.state.isAdd && _react2.default.createElement(_AddBookForm.AddBookForm, null)
+            );
+        }
+    }]);
+
+    return BookList;
+}(_react2.default.Component);
 
 BookList.propTypes = {
     bookList: _propTypes2.default.array.isRequired
 };
 
-},{"prop-types":44,"react":79}],103:[function(require,module,exports){
+},{"../actions/BookActions":92,"./AddBookForm":98,"./UpdateBookForm":110,"prop-types":44,"react":79}],104:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43315,7 +43621,7 @@ Books.propTypes = {
     bookList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/BookActions":92,"./BookList":102,"prop-types":44,"react":79}],104:[function(require,module,exports){
+},{"../actions/BookActions":92,"./BookList":103,"prop-types":44,"react":79}],105:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43410,7 +43716,7 @@ var Header = exports.Header = function (_React$Component) {
     return Header;
 }(_react2.default.Component);
 
-},{"react":79,"react-router-dom":64}],105:[function(require,module,exports){
+},{"react":79,"react-router-dom":64}],106:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43459,7 +43765,7 @@ var Home = exports.Home = function (_React$Component) {
     return Home;
 }(_react2.default.Component);
 
-},{"react":79}],106:[function(require,module,exports){
+},{"react":79}],107:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43634,7 +43940,12 @@ var PublisherList = exports.PublisherList = function (_React$Component) {
                         )
                     )
                 ),
-                this.state.isAdd && _react2.default.createElement(_AddPublisherForm.AddPublisherForm, null) || this.state.isUpdate && _react2.default.createElement(_UpdatePublisherForm.UpdatePublisherForm, { publisher: this.state.publisher })
+                _react2.default.createElement(
+                    'div',
+                    null,
+                    this.state.isUpdate && _react2.default.createElement(_UpdatePublisherForm.UpdatePublisherForm, { publisher: this.state.publisher })
+                ),
+                this.state.isAdd && _react2.default.createElement(_AddPublisherForm.AddPublisherForm, null)
             );
         }
     }]);
@@ -43646,7 +43957,7 @@ PublisherList.propTypes = {
     publisherList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/PublisherActions":93,"./AddPublisherForm":98,"./UpdatePublisherForm":109,"prop-types":44,"react":79}],107:[function(require,module,exports){
+},{"../actions/PublisherActions":93,"./AddPublisherForm":99,"./UpdatePublisherForm":111,"prop-types":44,"react":79}],108:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43710,7 +44021,7 @@ Publishers.propTypes = {
     publisherList: _propTypes2.default.array.isRequired
 };
 
-},{"../actions/PublisherActions":93,"./PublisherList":106,"prop-types":44,"react":79}],108:[function(require,module,exports){
+},{"../actions/PublisherActions":93,"./PublisherList":107,"prop-types":44,"react":79}],109:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43808,7 +44119,91 @@ var UpdateAuthorForm = exports.UpdateAuthorForm = function (_React$Component) {
     return UpdateAuthorForm;
 }(_react2.default.Component);
 
-},{"../actions/AuthorActions":91,"react":79}],109:[function(require,module,exports){
+},{"../actions/AuthorActions":91,"react":79}],110:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.UpdateBookForm = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _BookActions = require('../actions/BookActions');
+
+var _BookActions2 = _interopRequireDefault(_BookActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UpdateBookForm = exports.UpdateBookForm = function (_React$Component) {
+    _inherits(UpdateBookForm, _React$Component);
+
+    function UpdateBookForm(props) {
+        _classCallCheck(this, UpdateBookForm);
+
+        var _this = _possibleConstructorReturn(this, (UpdateBookForm.__proto__ || Object.getPrototypeOf(UpdateBookForm)).call(this, props));
+
+        _this.state = { title: '' };
+
+        _this.handleChange = _this.handleChange.bind(_this);
+        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        return _this;
+    }
+
+    _createClass(UpdateBookForm, [{
+        key: 'handleChange',
+        value: function handleChange(event) {
+            this.setState({ title: event.target.value });
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(event) {
+
+            var book = {
+                bookId: this.props.book.book_id,
+                bookName: this.state.title
+            };
+            _BookActions2.default.updateBook(book);
+            event.preventDefault();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'form',
+                { onSubmit: this.handleSubmit },
+                _react2.default.createElement(
+                    'legend',
+                    null,
+                    'Update Book'
+                ),
+                _react2.default.createElement(
+                    'label',
+                    null,
+                    'Book Name:',
+                    _react2.default.createElement('input', { type: 'text', value: this.state.title, onChange: this.handleChange, placeholder: this.props.book.title })
+                ),
+                ' ',
+                _react2.default.createElement('br', null),
+                _react2.default.createElement('input', { type: 'submit', value: 'Update' })
+            );
+        }
+    }]);
+
+    return UpdateBookForm;
+}(_react2.default.Component);
+
+},{"../actions/BookActions":92,"react":79}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43892,7 +44287,7 @@ var UpdatePublisherForm = exports.UpdatePublisherForm = function (_React$Compone
     return UpdatePublisherForm;
 }(_react2.default.Component);
 
-},{"../actions/PublisherActions":93,"react":79}],110:[function(require,module,exports){
+},{"../actions/PublisherActions":93,"react":79}],112:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -43904,7 +44299,7 @@ var Config = {
 
 exports.default = Config;
 
-},{}],111:[function(require,module,exports){
+},{}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43935,7 +44330,7 @@ var AppDispatcher = new DispatcherClass();
 
 exports.default = AppDispatcher;
 
-},{"flux":29}],112:[function(require,module,exports){
+},{"flux":29}],114:[function(require,module,exports){
 'use strict';
 
 var _jquery = require('jquery');
@@ -43964,7 +44359,7 @@ _reactDom2.default.render(_react2.default.createElement(
   _react2.default.createElement(_App.App, null)
 ), document.getElementById('app'));
 
-},{"./components/App.js":99,"jquery":36,"react":79,"react-dom":48,"react-router-dom":64}],113:[function(require,module,exports){
+},{"./components/App.js":100,"jquery":36,"react":79,"react-dom":48,"react-router-dom":64}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44053,7 +44448,7 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = AuthorStore;
 
-},{"../dispatcher/appDispatcher":111,"events":27}],114:[function(require,module,exports){
+},{"../dispatcher/appDispatcher":113,"events":27}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44076,8 +44471,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CHANGE_EVENT = 'change';
-
 var _bookStore = {
     books: []
 };
@@ -44093,18 +44486,18 @@ var BookStoreClass = function (_EventEmitter) {
 
     _createClass(BookStoreClass, [{
         key: 'addChangeListener',
-        value: function addChangeListener(cb) {
-            this.on(CHANGE_EVENT, cb);
+        value: function addChangeListener(cb, BookEvent) {
+            this.on(BookEvent, cb);
         }
     }, {
         key: 'removeChangeListener',
-        value: function removeChangeListener(cb) {
-            this.removeListener(CHANGE_EVENT, cb);
+        value: function removeChangeListener(cb, BookEvent) {
+            this.removeListener(BookEvent, cb);
         }
     }, {
         key: 'emitChange',
-        value: function emitChange() {
-            this.emit(CHANGE_EVENT);
+        value: function emitChange(BookEvent) {
+            this.emit(BookEvent);
         }
     }, {
         key: 'getAllBooks',
@@ -44123,7 +44516,19 @@ _appDispatcher2.default.register(function (action) {
     switch (action.actionType) {
         case 'read_books':
             _bookStore.books = action.data;
-            BookStore.emitChange();
+            BookStore.emitChange('BookChange');
+            break;
+        case 'delete_book':
+            _bookStore.books = action.data;
+            BookStore.emitChange('BookEdit');
+            break;
+        case 'update_book':
+            _bookStore.books = action.data;
+            BookStore.emitChange('BookEdit');
+            break;
+        case 'add_book':
+            _bookStore.books = action.data;
+            BookStore.emitChange('BookEdit');
             break;
         default:
             return;
@@ -44132,7 +44537,7 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = BookStore;
 
-},{"../dispatcher/appDispatcher":111,"events":27}],115:[function(require,module,exports){
+},{"../dispatcher/appDispatcher":113,"events":27}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44221,4 +44626,4 @@ _appDispatcher2.default.register(function (action) {
 
 exports.default = PublisherStore;
 
-},{"../dispatcher/appDispatcher":111,"events":27}]},{},[112]);
+},{"../dispatcher/appDispatcher":113,"events":27}]},{},[114]);

@@ -5,7 +5,7 @@ import Config from '../config';
 
 var PublisherApi = {
 	getAllPublishers: function (cb) {
-		axios.get('http://localhost:3000/publisher/')
+		axios.get(Config.api + '/publisher/')
 			.then(res => {
 				cb(res.data);
 			})

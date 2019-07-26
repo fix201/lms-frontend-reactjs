@@ -72,8 +72,13 @@ export class PublisherList extends React.Component {
                         <tr><td><button onClick={() => this.isAdding(this.publisher)}>Add</button></td></tr>
                     </tbody>
                 </table>
+                <div>
                 {
-                    this.state.isAdd && <AddPublisherForm /> ||  this.state.isUpdate && <UpdatePublisherForm publisher={this.state.publisher}/>
+                      this.state.isUpdate && <UpdatePublisherForm publisher={this.state.publisher}/>
+                }
+                </div>
+                {
+                    this.state.isAdd && <AddPublisherForm /> 
                 }
             </div>
         );

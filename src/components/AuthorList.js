@@ -76,8 +76,14 @@ export class AuthorList extends React.Component {
                         <tr><td><button onClick={()=>this.isAdding(this.author)}>Add</button></td></tr>
                     </tbody>
                 </table>
+                <div>
+                    {
+                         this.state.isUpdate && <UpdateAuthorForm author={this.state.author}/>
+                    }
+                </div>
+
                 {
-                    this.state.isAdd && <AddAuthorForm /> ||  this.state.isUpdate && <UpdateAuthorForm author={this.state.author}/>
+                    this.state.isAdd && <AddAuthorForm /> 
                 }
             </div>
         );

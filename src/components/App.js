@@ -12,7 +12,7 @@ import BookStore from '../stores/BookStore';
 import AuthorStore from '../stores/AuthorStore';
 import PublisherStore from '../stores/PublisherStore';
 import AuthorActions from '../actions/AuthorActions';
-import BookActions from '../actions/PublisherActions';
+import BookActions from '../actions/BookActions';
 import PublisherActions from '../actions/PublisherActions';
 
 export class App extends React.Component{
@@ -41,7 +41,8 @@ export class App extends React.Component{
     }
 
     componentDidMount(){
-        BookStore.addChangeListener(this._onBookChange.bind(this));
+        BookStore.addChangeListener(this._onBookChange.bind(this), 'BookChange');
+        BookStore.addChangeListener(this._onBookEdit.bind(this), 'BookEdit');
         AuthorStore.addChangeListener(this._onAuthorChange.bind(this), 'AuthorChange');
         AuthorStore.addChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
         AuthorStore.addChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
@@ -51,7 +52,8 @@ export class App extends React.Component{
     }
 
     componentWillUnmount(){
-        BookStore.removeChangeListener(this._onBookChange.bind(this));
+        BookStore.removeChangeListener(this._onBookChange.bind(this), 'BookChange');
+        BookStore.removeChangeListener(this._onBookEdit.bind(this), 'BookEdit');
         AuthorStore.removeChangeListener(this._onAuthorChange.bind(this), 'AuthorChange');
         AuthorStore.removeChangeListener(this._onAuthorDelete.bind(this), 'AuthorDelete');
         AuthorStore.removeChangeListener(this._onAuthorUpdate.bind(this), 'AuthorUpdate');
@@ -62,6 +64,10 @@ export class App extends React.Component{
 
     _onBookChange(){
         this.setState({bookList: BookStore.getAllBooks()});
+    }
+
+    _onBookEdit(){
+        BookActions.readBooks();
     }
 
     _onAuthorChange(){

@@ -11,7 +11,7 @@ var lint = require('gulp-eslint');
 
 var config = {
 	port: 9090,
-	devBaseUrl: 'ec2-3-95-13-160.compute-1.amazonaws.com',
+	devBaseUrl: 'http://localhost',
 	paths: {
 		html: './src/*.html',
 		js: './src/**/*.js',
