@@ -43485,7 +43485,7 @@ var BookList = exports.BookList = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                     'table',
-                    { className: 'table' },
+                    { className: 'table table-hover' },
                     _react2.default.createElement(
                         'thead',
                         null,
@@ -44294,7 +44294,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var Config = {
-    api: 'http://localhost:3000'
+    api: 'http://ec2-3-95-13-160.compute-1.amazonaws.com:3000'
 };
 
 exports.default = Config;

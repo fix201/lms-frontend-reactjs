@@ -62,7 +62,7 @@ export class BookList extends React.Component {
         return (
             <div>
                 <h1>Books</h1>
-                <table className="table">
+                <table className="table table-hover">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -78,9 +78,9 @@ export class BookList extends React.Component {
                     </tbody>
                 </table>
                 <div>
-                {
-                    this.state.isUpdate && <UpdateBookForm book={this.state.book} />
-                }
+                    {
+                        this.state.isUpdate && <UpdateBookForm book={this.state.book} />
+                    }
                 </div>
                 {
                     this.state.isAdd && <AddBookForm />
