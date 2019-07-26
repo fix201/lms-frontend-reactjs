@@ -44294,7 +44294,7 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 var Config = {
-    api: 'http://ec2-3-95-13-160.compute-1.amazonaws.com:3000'
+    api: 'http://3.95.13.160:3000'
 };
 
 exports.default = Config;
